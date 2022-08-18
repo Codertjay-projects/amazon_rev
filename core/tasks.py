@@ -28,22 +28,24 @@ def run_automation_bot():
     for item in urls:
         filename = wget.download(item,
                                  out=file_download_path)
-        try:
-            #  creating a name which could be used for the product Example meta_Computers
-            name = filename.split("/")[2].split(".")[0]
-        except:
-            #  if there is an error we use this to create the name  Example: meta_Computersjsongz
-            name = filename.split("/")[:-1].replace(".", "")
-        #  i literally could use get_or_create, but sometimes it returns an error
-        category_id = Category.objects.filter(name=name).first().id
-        if not category_id:
-            category_id = Category.objects.create(name=name).id
-        #  create the product
-        create_amazon_products(filename, category_id)
+
+        create_amazon_products(filename)
 
 
 @shared_task
-def create_amazon_products(filename, category_id):
+def create_amazon_products(filename):
+    try:
+        #  creating a name which could be used for the product Example meta_Computers
+        name = filename.split("/")[2].split(".")[0]
+    except:
+        #  if there is an error we use this to create the name  Example: meta_Computersjsongz
+        name = filename.split("/")[:-1].replace(".", "")
+    #  i literally could use get_or_create, but sometimes it returns an error
+    category = Category.objects.filter(name=name).first()
+    if not category:
+        category = Category.objects.create(name=name)
+
+    #  create the product
     #  unzipping the file and also opening it at once
     with gzip.open(filename, 'r') as f:
         counter = 0
@@ -69,14 +71,13 @@ def create_amazon_products(filename, category_id):
                     rank=rank,
                     date=date,
                     brand=brand,
-                    category_id=category_id)
+                    category=category)
             except Exception as a:
                 #  an error occurred
                 print(a)
     # deleting the downloaded file
     os.remove(filename)
     print("Deleted the gzip.json file downloaded")
-
 
 
 """
