@@ -1,15 +1,15 @@
 from rest_framework import serializers
 
-
-class CategorySerializer(serializers.Serializer):
-    url = serializers.CharField(max_length=200)
+from core.models import Category, Product
 
 
-class ProductSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=1000, required=False)
-    brand = serializers.CharField(max_length=1000, required=False)
-    date = serializers.CharField(max_length=2000, required=False)
-    image = serializers.ListField(max_length=2000, required=False)
-    tag = serializers.CharField(max_length=2000, required=False)
-    rank = serializers.CharField(max_length=2000, required=False)
-    description = serializers.JSONField(max_length=20000, required=False)
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = "__all__"

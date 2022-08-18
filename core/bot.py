@@ -24,7 +24,7 @@ class AmazonBotAutomation:
             options=self.options,
             service=s)
         self.driver.implicitly_wait(50)
-        self.json_urls = []
+        self.zip_file_urls = []
         super(AmazonBotAutomation, self).__init__()
 
     def __enter__(self):
@@ -44,10 +44,9 @@ class AmazonBotAutomation:
             elements = element.find_elements(by=By.CSS_SELECTOR, value=data.get("item_items_selectors"))
             for item in elements:
                 json_url = item.get_attribute("href")
-                self.json_urls.append(json_url)
+                self.zip_file_urls.append(json_url)
+
+        return self.zip_file_urls
 
 
-bot = AmazonBotAutomation(teardown=True)
-bot.land_page()
-bot.download_all_reviews()
 
