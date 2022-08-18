@@ -1,0 +1,4 @@
+{
+  "item_selector": "table[class=\"code-table\"]",
+  "item_items_selectors": "a"
+}
