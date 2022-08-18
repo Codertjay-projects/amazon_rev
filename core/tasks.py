@@ -29,7 +29,7 @@ def run_automation_bot():
         filename = wget.download(item,
                                  out=file_download_path)
 
-        create_amazon_products(filename)
+        create_amazon_products.delay(filename)
 
 
 @shared_task
